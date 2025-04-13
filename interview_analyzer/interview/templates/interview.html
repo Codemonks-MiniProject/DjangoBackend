@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interview Recorder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      background-color: #f4f4f4;
+    }
+    video {
+      width: 640px;
+      height: 480px;
+      border-radius: 10px;
+      border: 3px solid #333;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .start-btn { background-color: #4CAF50; color: white; }
+    .stop-btn { background-color: #f44336; color: white; }
+  </style>
+</head>
+<body>
+
+  <h1>Interview Recorder</h1>
+  <video id="preview" autoplay muted></video>
+  <br>
+  <button class="btn start-btn" onclick="startRecording()">Start Interview</button>
+  <button class="btn stop-btn" onclick="stopRecording()" disabled>End Interview</button>
+
+  <script>
+    let mediaRecorder;
+    let recordedBlobs;
+    let stream;
+
+    async function startRecording() {
+      const startButton = document.querySelector('.start-btn');
+      const stopButton = document.querySelector('.stop-btn');
+      startButton.disabled = true;
+      stopButton.disabled = false;
+
+      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      document.getElementById('preview').srcObject = stream;
+
+      recordedBlobs = [];
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedBlobs.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = sendToServer;
+
+      mediaRecorder.start();
+    }
+
+    function stopRecording() {
+      const startButton = document.querySelector('.start-btn');
+      const stopButton = document.querySelector('.stop-btn');
+      stopButton.disabled = true;
+      startButton.disabled = false;
+
+      mediaRecorder.stop();
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    function sendToServer() {
+      const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+      const formData = new FormData();
+      formData.append('video', blob, 'interview.webm');
+
+      fetch('/upload/', {
+        method: 'POST',
+        body: formData,
+      }).then(response => {
+        if (response.ok) {
+          alert("Interview recorded and uploaded!");
+          window.location.href = '/result/';
+        } else {
+          alert("Failed to upload video.");
+        }
+      });
+    }
+  </script>
+</body>
+</html>

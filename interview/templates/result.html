@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Interview Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .score-bar {
+      width: 60%;
+      margin: auto;
+      background-color: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .bar-fill {
+      height: 24px;
+      line-height: 24px;
+      color: white;
+      padding-left: 10px;
+      border-radius: 20px;
+    }
+
+    .facial {
+      background: #4caf50;
+    }
+
+    .voice {
+      background: #2196f3;
+    }
+
+    .technical {
+      background: #ff9800;
+    }
+
+    .final {
+      background: #673ab7;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Interview Confidence Result</h1>
+
+  <h2>Final Score: {{ final_score }}%</h2>
+  <div class="score-bar">
+    <div class="bar-fill final" style="width:{{ final_score }}%">{{ final_score }}%</div>
+  </div>
+
+  <h3>Facial Confidence</h3>
+  <div class="score-bar">
+    <div class="bar-fill facial" style="width:{{ facial }}%">{{ facial }}%</div>
+  </div>
+
+  <h3>Vocal Confidence</h3>
+  <div class="score-bar">
+    <div class="bar-fill voice" style="width:{{ voice }}%">{{ voice }}%</div>
+  </div>
+
+  <h3>Technical Knowledge</h3>
+  <div class="score-bar">
+    <div class="bar-fill technical" style="width:{{ technical }}%">{{ technical }}%</div>
+  </div>
+
+  <hr>
+  <h3>Transcript:</h3>
+  <p style="width: 70%; margin: auto; text-align: justify;">{{ transcript }}</p>
+</body>
+
+</html>
